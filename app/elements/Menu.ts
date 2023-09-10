@@ -3,7 +3,7 @@ import { Stateful } from "../../graphics/elements/Stateful";
 import { Text } from "../../graphics/elements/Text";
 import { Fgr, Spacing } from "../../graphics/elements/TextAttributes";
 
-const MenuItem = (title: string, focused: boolean) => focused ? Fgr.Red(Text(title)) : Text(title);
+const MenuItem = (title: string, focused: boolean) => focused ? Fgr.Blue(Text(title)) : Text(title);
 
 export const Menu = (initial = 0) => Stateful((state, updateState) => {
 
