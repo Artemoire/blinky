@@ -16,13 +16,24 @@ export enum SetForeground {
   White = `${CSI_START}37${CSI_END}`,
 }
 
-class SetForegroundAttribute implements Element {
+export enum SetBackground {
+  Black = `${CSI_START}40${CSI_END}`,
+  Red = `${CSI_START}41${CSI_END}`,
+  Green = `${CSI_START}42${CSI_END}`,
+  Yellow = `${CSI_START}43${CSI_END}`,
+  Blue = `${CSI_START}44${CSI_END}`,
+  Magenta = `${CSI_START}45${CSI_END}`,
+  Cyan = `${CSI_START}46${CSI_END}`,
+  White = `${CSI_START}47${CSI_END}`,
+}
+
+class SetAttributeElement implements Element {
   constructor(
-    private fgr: SetForeground,
+    private attr: SetForeground | SetBackground,
     private child: Element) { }
 
   renderStrings(): string[] {
-    return [this.fgr, ...this.child.renderStrings(), RESET_ATTRIBUTES];
+    return [this.attr, ...this.child.renderStrings(), RESET_ATTRIBUTES];
   }
 
   render(renderer: ElementRenderer): string[] {
@@ -49,14 +60,25 @@ class PadAttributeMaybe implements Element {
 }
 
 export const Fgr = {
-  Black: (child: Element) => new SetForegroundAttribute(SetForeground.Black, child),
-  Red: (child: Element) => new SetForegroundAttribute(SetForeground.Red, child),
-  Green: (child: Element) => new SetForegroundAttribute(SetForeground.Green, child),
-  Yellow: (child: Element) => new SetForegroundAttribute(SetForeground.Yellow, child),
-  Blue: (child: Element) => new SetForegroundAttribute(SetForeground.Blue, child),
-  Magenta: (child: Element) => new SetForegroundAttribute(SetForeground.Magenta, child),
-  Cyan: (child: Element) => new SetForegroundAttribute(SetForeground.Cyan, child),
-  White: (child: Element) => new SetForegroundAttribute(SetForeground.White, child),
+  Black: (child: Element) => new SetAttributeElement(SetForeground.Black, child),
+  Red: (child: Element) => new SetAttributeElement(SetForeground.Red, child),
+  Green: (child: Element) => new SetAttributeElement(SetForeground.Green, child),
+  Yellow: (child: Element) => new SetAttributeElement(SetForeground.Yellow, child),
+  Blue: (child: Element) => new SetAttributeElement(SetForeground.Blue, child),
+  Magenta: (child: Element) => new SetAttributeElement(SetForeground.Magenta, child),
+  Cyan: (child: Element) => new SetAttributeElement(SetForeground.Cyan, child),
+  White: (child: Element) => new SetAttributeElement(SetForeground.White, child),
+}
+
+export const Bgr = {
+  Black: (child: Element) => new SetAttributeElement(SetBackground.Black, child),
+  Red: (child: Element) => new SetAttributeElement(SetBackground.Red, child),
+  Green: (child: Element) => new SetAttributeElement(SetBackground.Green, child),
+  Yellow: (child: Element) => new SetAttributeElement(SetBackground.Yellow, child),
+  Blue: (child: Element) => new SetAttributeElement(SetBackground.Blue, child),
+  Magenta: (child: Element) => new SetAttributeElement(SetBackground.Magenta, child),
+  Cyan: (child: Element) => new SetAttributeElement(SetBackground.Cyan, child),
+  White: (child: Element) => new SetAttributeElement(SetBackground.White, child),
 }
 
 export const Spacing = (padding: number, child: Element) => new PadAttributeMaybe(padding, child);
