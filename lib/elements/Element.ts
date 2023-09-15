@@ -1,5 +1,6 @@
 export type VisitElement = (element: Element) => void;
 
+export type ElementFunc<TProps = undefined> = TProps extends undefined ? () => Element : (props: TProps) => Element;
 export interface Element {
   lifecycleState: "mounted" | "detached";
   readonly kind: Symbol;
@@ -45,7 +46,7 @@ export abstract class AbstractContainer implements Element {
     try {
       this.children.forEach(child => child.mount());
     } catch (error) {
-      console.log(this.children.map(child=>child.kind));
+      console.log(this.children.map(child => child.kind));
     }
   }
 

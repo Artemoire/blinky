@@ -1,5 +1,7 @@
 import { Blinky } from "./app/elements/Blinky";
-import { RenderApp } from "./graphics/render/AppRenderer";
+import { App } from "./lib/runtime/App";
 
 
-RenderApp(Blinky());
+const app = App(Blinky);
+
+app.start();

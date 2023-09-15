@@ -1,7 +1,7 @@
-import { Group } from "../../graphics/elements/Group";
-import { Line } from "../../graphics/elements/Line";
-import { Text } from "../../graphics/elements/Text";
-import { Bgr, Fgr, Spacing } from "../../graphics/elements/TextAttributes";
+import { Group } from "../../lib/elements/Group";
+import { Line } from "../../lib/elements/Line";
+import { Text } from "../../lib/elements/Text";
+import { Bgr, Fgr, Spacing } from "../../lib/elements/TextAttributes";
 import { Explorer } from "./Explorer";
 import { Menu } from "./Menu";
 

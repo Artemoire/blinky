@@ -1,7 +1,7 @@
-import { Line } from "../../graphics/elements/Line";
-import { Stateful } from "../../graphics/elements/Stateful";
-import { Text } from "../../graphics/elements/Text";
-import { Fgr, Spacing } from "../../graphics/elements/TextAttributes";
+import { Line } from "../../lib/elements/Line";
+import { Stateful } from "../../lib/elements/Stateful";
+import { Text } from "../../lib/elements/Text";
+import { Fgr, Spacing } from "../../lib/elements/TextAttributes";
 
 const MenuItem = (title: string, focused: boolean) => focused ? Fgr.Blue(Text(title)) : Text(title);
 

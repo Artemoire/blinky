@@ -1,6 +1,6 @@
-import { Element, VisitElement } from "../../graphics/elements/Element";
-import { Group } from "../../graphics/elements/Group";
-import { Text } from "../../graphics/elements/Text";
+import { Element, VisitElement } from "../../lib/elements/Element";
+import { Group } from "../../lib/elements/Group";
+import { Text } from "../../lib/elements/Text";
 import { Panel } from "./Panel";
 
 class ExplorerElement implements Element {
