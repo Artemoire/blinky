@@ -1,4 +1,4 @@
-import { Element, ElementRenderer } from "./Element";
+import { Element, VisitElement } from "./Element";
 
 const CSI_START = '\u001b[';
 const CSI_END = 'm';
@@ -28,35 +28,61 @@ export enum SetBackground {
 }
 
 class SetAttributeElement implements Element {
+  readonly kind: Symbol = Symbol.for('element.Attr');
+  lifecycleState: "mounted" | "detached" = "detached";
+
   constructor(
     private attr: SetForeground | SetBackground,
     private child: Element) { }
+
+  mount(): void {
+    this.child.mount();
+    this.lifecycleState = "mounted";
+  }
+
+  unmount(): void {
+    this.child.unmount();
+    this.lifecycleState = "detached";
+  }
 
   renderStrings(): string[] {
     return [this.attr, ...this.child.renderStrings(), RESET_ATTRIBUTES];
   }
 
-  render(renderer: ElementRenderer): string[] {
-    return this.renderStrings();
+  visit(visitor: VisitElement): void {
+    visitor(this);
+    this.child.visit(visitor);
   }
-
 }
 
 class PadAttributeMaybe implements Element {
+  readonly kind: Symbol = Symbol.for('element.PadAttr');
+  lifecycleState: "mounted" | "detached" = "detached";
+
   constructor(
     private padding: number,
     private child: Element
   ) { }
+
+  mount(): void {
+    this.child.mount();
+    this.lifecycleState = "mounted";
+  }
+
+  unmount(): void {
+    this.child.unmount();
+    this.lifecycleState = "detached";
+  }
 
   renderStrings(): string[] {
     const padding = ' '.repeat(this.padding);
     return [padding, ...this.child.renderStrings(), padding];
   }
 
-  render(renderer: ElementRenderer): string[] {
-    return this.renderStrings();
+  visit(visitor: VisitElement): void {
+    visitor(this);
+    this.child.visit(visitor);
   }
-
 }
 
 export const Fgr = {

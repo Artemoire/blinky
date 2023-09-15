@@ -1,17 +1,15 @@
-import { Element, ElementRenderer } from "./Element";
+import { AbstractContainer, Element } from "./Element";
 
-class GroupElement implements Element {
+class GroupElement extends AbstractContainer {
+  
+  readonly kind: Symbol = Symbol.for('element.Group');
 
   constructor(
-    private elements: Element[]
-  ) { }
+    children: Element[]
+  ) { super(children)}
 
   renderStrings(): string[] {
-    throw new Error("Method not implemented.");
-  }
-
-  render(renderer: ElementRenderer): string[] {
-    return [...this.elements.reduce<string[]>((renderList, segment) => [...renderList, ...segment.render(renderer)], [])];
+    return [...this.children.reduce<string[]>((renderList, segment) => [...renderList, ...segment.renderStrings()], [])];
   }
 
 }

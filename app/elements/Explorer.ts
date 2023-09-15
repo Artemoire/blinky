@@ -1,9 +1,12 @@
-import { Element, ElementRenderer } from "../../graphics/elements/Element";
+import { Element, VisitElement } from "../../graphics/elements/Element";
 import { Group } from "../../graphics/elements/Group";
 import { Text } from "../../graphics/elements/Text";
 import { Panel } from "./Panel";
 
 class ExplorerElement implements Element {
+
+  readonly kind: Symbol = Symbol.for('element.Explorer');
+  lifecycleState: "mounted" | "detached" = "detached";
 
   private left: Element;
   private right: Element;
@@ -16,13 +19,21 @@ class ExplorerElement implements Element {
     this.right = Panel({ rows: height, cols: Math.floor(width / 2) });
   }
 
-  renderStrings(): string[] {
-    throw new Error("Method not implemented.");
+  mount(): void {
+    this.left.mount();
+    this.right.mount();
+    this.lifecycleState = "mounted";
   }
 
-  render(renderer: ElementRenderer): string[] {
-    const leftRender = this.left.render(renderer);
-    const rightRender = this.right.render(renderer);
+  unmount(): void {
+    this.left.unmount();
+    this.right.unmount();
+    this.lifecycleState = "detached";
+  }
+
+  renderStrings(): string[] {
+    const leftRender = this.left.renderStrings();
+    const rightRender = this.right.renderStrings();
     const renderStrings = [];
     const shouldSpace = (this.width % 2) === 0 ? false : true;
     for (let i = 0; i < this.height; i++) {
@@ -34,6 +45,11 @@ class ExplorerElement implements Element {
     return renderStrings;
   }
 
+  visit(visitor: VisitElement): void {
+    visitor(this);
+    this.left.visit(visitor)
+    this.right.visit(visitor);
+  }
 }
 
 type ExplorerProps = { rows: number; cols: number; };

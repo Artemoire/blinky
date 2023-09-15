@@ -1,16 +1,15 @@
-import { Element, ElementRenderer } from "./Element";
+import { Element, AbstractElement } from "./Element";
 
-class TextElement implements Element {
+class TextElement extends AbstractElement {
+
+  readonly kind: Symbol = Symbol.for('element.Text');
 
   constructor(private content: string) {
+    super();
   }
 
   renderStrings(): string[] {
     return [this.content];
-  }
-
-  render(renderer: ElementRenderer): string[] {
-    return this.renderStrings();
   }
 
 }

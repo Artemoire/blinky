@@ -1,8 +1,10 @@
-import { Element, ElementRenderer } from "../../graphics/elements/Element";
+import { Element, VisitElement } from "../../graphics/elements/Element";
 import { Group } from "../../graphics/elements/Group";
 import { Text } from "../../graphics/elements/Text";
 
 class PanelElement implements Element {
+  readonly kind: Symbol = Symbol.for('element.Panel');
+  lifecycleState: "mounted" | "detached" = "detached";
 
   private _renderStrings: string[] | null = null;
 
@@ -11,17 +13,28 @@ class PanelElement implements Element {
     private height: number,
   ) { }
 
-  renderStrings(): string[] {
-    throw new Error("Method not implemented.");
-  }
-
-  render(renderer: ElementRenderer): string[] {
-    if (this._renderStrings !== null) return this._renderStrings;
+  mount(): void {
+    if (this._renderStrings !== null) throw new Error("Unmount?");
+    this._renderStrings = [];
     const bodySegment = '│' + ' '.repeat(this.width - 2) + '│';
     this._renderStrings = ['┌' + '─'.repeat(this.width - 2) + '┐'];
     for (let row = 0; row < this.height - 2; row++) this._renderStrings.push(bodySegment);
     this._renderStrings.push('└' + '─'.repeat(this.width - 2) + '┘');
+    this.lifecycleState = "mounted";
+  }
+
+  unmount(): void {
+    if (this._renderStrings === null) throw new Error("Mount?");
+    this.lifecycleState = "detached";
+  }
+
+  renderStrings(): string[] {
+    if (this._renderStrings === null) throw new Error("MOunt?");
     return this._renderStrings;
+  }
+
+  visit(visitor: VisitElement): void {
+    visitor(this);
   }
 
 }

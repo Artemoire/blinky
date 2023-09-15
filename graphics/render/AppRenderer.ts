@@ -1,5 +1,6 @@
 import { nextTick } from "process";
-import { Element, ElementRenderer } from "../elements/Element";
+import { Element, VisitElement } from "../elements/Element";
+import { Stateful, StatefulKind } from "../elements/Stateful";
 
 const GOTO_LINE_ABOVE = '\x1b[A';
 const GOTO_LINE_START = '\r';
@@ -8,7 +9,7 @@ const CLEAR_SCREEN = '\x1b[2J';
 type LineHistory = {
   positions: [number, number][]
 }
-class AppRenderer implements ElementRenderer {
+class AppRenderer {
 
   private history = {
     lineCount: 0,
@@ -20,16 +21,39 @@ class AppRenderer implements ElementRenderer {
     // },
   }
 
-  constructor(private element: Element) { }
+  constructor(private element: Element) {
+  }
 
+  private _mount(element: Element = this.element) {
+    if (element.lifecycleState !== "detached") return
+
+    element.mount();
+    element.visit((element) => {
+      if (element.kind === StatefulKind) {
+        (element as ReturnType<typeof Stateful>).subscribe(() => {
+          this.scheduleRender();
+          this._unmount(element);
+          this._mount(element);
+        });
+      }
+    })
+  }
+
+  private _unmount(element: Element = this.element) {
+    if (element.lifecycleState !== "mounted") return;
+    element.unmount();
+  }
 
   render() {
+    this._mount();
     process.stdout.write(GOTO_LINE_START);
     process.stdout.write(GOTO_LINE_ABOVE.repeat(this.history.lineCount));
     const maxCaret = process.stdout.columns;
     this.history.lineCount = 0;
     this.history.caret = 0;
-    const renderStrings = this.element.render(this);
+
+    const renderStrings = this.element.renderStrings();
+
     for (let i = 0; i < renderStrings.length; i++) {
       if (this.history.caret === maxCaret) {
         this.history.caret = 0;
@@ -50,7 +74,7 @@ class AppRenderer implements ElementRenderer {
     }
   }
 
-  rerender() {
+  scheduleRender() {
     nextTick(() => {
       this.render();
     });
