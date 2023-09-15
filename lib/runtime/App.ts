@@ -13,6 +13,7 @@ class AppRuntime {
   start() {
     this.element = this.elementFunc();
     this._mount(this.element);
+    this.scheduleRender();
   }
 
   private _mount(element: Element) {
